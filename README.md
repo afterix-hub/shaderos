@@ -10,7 +10,6 @@ This is the private source repository. It is not the package a customer receives
 - No third-party package dependencies — both assemblies compile against Unity's own core modules only
 
 ## Opening the Project
-
 Open this folder directly in Unity via Unity Hub. No package installation step is required beyond what's already in `Packages/manifest.json`.
 
 ## Architecture
@@ -45,4 +44,4 @@ Proprietary. This repository is private; ShaderOS is distributed to customers ex
 ---
 
 Copyright (c) 2026 Arish. All rights reserved.
-Tools Studio is a brand operated by Arish.
+Tools Studio is a brand operated by Arish. 
