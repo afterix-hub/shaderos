@@ -44,4 +44,4 @@ Proprietary. This repository is private; ShaderOS is distributed to customers ex
 ---
 
 Copyright (c) 2026 Arish. All rights reserved.
-Tools Studio is a brand operated by Arish. 
+Tools Studio is a brand operated by Arish.
