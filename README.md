@@ -24,6 +24,10 @@ Two assemblies, Editor-only:
 
 Entry point: `Tools -> ShaderOS`. Settings: `Edit -> Project Settings -> Tools Studio -> ShaderOS`.
 
+## Development Workflow
+
+Edit any `.cs` file under `Assets/ShaderOS/`; Unity recompiles both assemblies automatically. Open the ShaderOS window (`Tools -> ShaderOS`) to test changes directly — `Load Demo Data` gives you a populated report to work against without needing a real project's materials on hand. There is no separate build step during development; compiling for release only matters at export time, covered in `DLL-PUBLISHING-GUIDE.md`.
+
 ## Development Notes
 
 - The `Editor` assembly is the only consumer of `UnityEditor`/`UnityEngine` APIs; the `Runtime` assembly stays engine-free by design so its analyzers are trivially unit-testable and so it can never end up referenced from anything player-facing.
