@@ -5,6 +5,7 @@ using UnityEngine;
 using ToolsStudio.ShaderOS.Audit;
 using ToolsStudio.ShaderOS.Compatibility;
 using ToolsStudio.ShaderOS.Editor.Styles;
+using ToolsStudio.ShaderOS.Editor.Windows;
 
 namespace ToolsStudio.ShaderOS.Editor.Windows.Panels
 {
@@ -32,7 +33,7 @@ namespace ToolsStudio.ShaderOS.Editor.Windows.Panels
         private AuditReport                   _lastReport;
         private Vector2                       _scroll;
 
-        public void Draw(AuditReport report)
+        public void Draw(AuditReport report, EditorWindow window)
         {
             if (_lastReport != report) { _lastReport = report; RebuildList(); }
 
@@ -40,7 +41,7 @@ namespace ToolsStudio.ShaderOS.Editor.Windows.Panels
             DrawColumnHeaders();
 
             _scroll = EditorGUILayout.BeginScrollView(_scroll);
-            foreach (var mat in _filteredList) DrawMaterialRow(mat);
+            foreach (var mat in _filteredList) DrawMaterialRow(mat, window);
             EditorGUILayout.EndScrollView();
 
             // Footer count with denominator — clarifies what the number means.
@@ -93,7 +94,7 @@ namespace ToolsStudio.ShaderOS.Editor.Windows.Panels
             EditorGUILayout.EndHorizontal();
         }
 
-        private void DrawMaterialRow(MaterialRecord mat)
+        private void DrawMaterialRow(MaterialRecord mat, EditorWindow window)
         {
             bool expanded = _expandedGuids.Contains(mat.Guid);
 
@@ -129,11 +130,10 @@ namespace ToolsStudio.ShaderOS.Editor.Windows.Panels
             GUILayout.Label(mat.Issues.Count > 0 ? mat.Issues.Count.ToString() : "—",
                 EditorStyles.miniLabel, GUILayout.Width(COL_ISSUES));
 
-            if (GUILayout.Button("◎", EditorStyles.miniLabel, GUILayout.Width(COL_PING)))
-            {
-                var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(mat.AssetPath);
-                if (asset != null) EditorGUIUtility.PingObject(asset);
-            }
+            EditorGUI.BeginDisabledGroup(!PingUtility.IsPingable);
+            if (GUILayout.Button(PingUtility.ButtonContent("◎"), EditorStyles.miniLabel, GUILayout.Width(COL_PING)))
+                PingUtility.PingMaterial(mat, window);
+            EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.EndHorizontal();
 

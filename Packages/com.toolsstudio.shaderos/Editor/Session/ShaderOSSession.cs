@@ -20,10 +20,8 @@ namespace ToolsStudio.ShaderOS.Editor.Session
         public bool        HasReport       => _lastReport != null;
         public bool        IsPreviewActive => _isPreviewActive;
 
-        // Which report is on screen right now is an explicit choice (_isPreviewActive), not
-        // something derived from whether a real report merely exists. Starting a real scan
-        // (OnScanStarted, below) is what forces this back to real — not the mere presence of
-        // _lastReport. This lets a user switch back to demo after a real scan has completed.
+        // Explicit choice, not derived from _lastReport's mere presence — only OnScanStarted
+        // forces this back to real, so a user can return to demo data after a real scan.
         public AuditReport DisplayedReport  => _isPreviewActive ? _previewReport : _lastReport;
         public bool        IsShowingPreview => _isPreviewActive;
 

@@ -63,10 +63,8 @@ namespace ToolsStudio.ShaderOS.Editor.Windows
 
             if (_activeTab == Tab.Keywords)
             {
-                // Keywords manages its own fixed-summary + expanding-scroll-region layout.
-                // A scroll view with no height constraint nested inside another scroll view
-                // never actually engages — it just grows to fit its content instead of
-                // scrolling — so this tab is deliberately not wrapped in the outer one.
+                // A scroll view with no height constraint never scrolls inside another one,
+                // so Keywords (which manages its own scroll region) is left unwrapped here.
                 DrawActivePanel();
             }
             else
@@ -147,8 +145,8 @@ namespace ToolsStudio.ShaderOS.Editor.Windows
 
             switch (_activeTab)
             {
-                case Tab.Overview:  _overviewPanel .Draw(report); break;
-                case Tab.Materials: _materialsPanel.Draw(report); break;
+                case Tab.Overview:  _overviewPanel .Draw(report, this); break;
+                case Tab.Materials: _materialsPanel.Draw(report, this); break;
                 case Tab.Keywords:  _keywordsPanel .Draw(report); break;
                 case Tab.Variants:  _variantsPanel .Draw(report); break;
             }
@@ -156,9 +154,6 @@ namespace ToolsStudio.ShaderOS.Editor.Windows
 
         private static void DrawEmptyState()
         {
-            // Centered, minimal — no illustration, no marketing copy, no buttons. Both actions
-            // (Scan Project, Load Demo Data) live in the toolbar in DrawTabBar; this is purely
-            // explanatory text, not a second action surface.
             GUILayout.FlexibleSpace();
             EditorGUILayout.BeginVertical();
             EditorGUILayout.LabelField("No scan has been run yet.", EditorStyles.centeredGreyMiniLabel);

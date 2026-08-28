@@ -4,16 +4,7 @@ using ToolsStudio.ShaderOS.Editor.Styles;
 
 namespace ToolsStudio.ShaderOS.Editor.Windows.Panels
 {
-    // Product identity page, styled to match the About-tab convention already established by
-    // other Tools Studio products (Conduit) — centered identity block, flat section spacing
-    // instead of boxed cards, a button grid for support links, and an ecosystem cross-link
-    // section. Deliberately takes no AuditReport — readable before a scan has ever run.
-    //
-    // Two different sizing rules on purpose: the description text uses a responsive width
-    // (computed from the window) so it stays comfortable to read at any window size. Buttons
-    // and cards use small, fixed, editor-appropriate widths regardless of window size — the
-    // previous pass sized them as fractions of the responsive width instead, which is what
-    // made them balloon into web-CTA-sized elements on a wide window.
+    // Takes no AuditReport by design — this panel must stay readable before a scan has ever run.
     internal sealed class AboutPanel
     {
         private const float MAX_TEXT_WIDTH = 620f;
@@ -207,9 +198,6 @@ namespace ToolsStudio.ShaderOS.Editor.Windows.Panels
             EditorGUILayout.EndHorizontal();
         }
 
-        // Drawn as a real clickable card — a button-styled background rect with the product
-        // name and tagline layered on top — rather than a single-line label, so these read as
-        // compact navigation cards instead of a plain button, while staying editor-scaled.
         private static void DrawEcosystemCard((string name, string tagline, string url) product)
         {
             var rect = GUILayoutUtility.GetRect(CARD_WIDTH, CARD_HEIGHT, GUILayout.Width(CARD_WIDTH));

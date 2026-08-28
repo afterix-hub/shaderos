@@ -6,6 +6,7 @@ using ToolsStudio.ShaderOS.Keywords;
 using ToolsStudio.ShaderOS.Variants;
 using ToolsStudio.ShaderOS.Compatibility;
 using ToolsStudio.ShaderOS.Editor.Styles;
+using ToolsStudio.ShaderOS.Editor.Windows;
 
 namespace ToolsStudio.ShaderOS.Editor.Windows.Panels
 {
@@ -13,7 +14,7 @@ namespace ToolsStudio.ShaderOS.Editor.Windows.Panels
     {
         private Vector2 _issuesScroll;
 
-        public void Draw(AuditReport report)
+        public void Draw(AuditReport report, EditorWindow window)
         {
             EditorGUILayout.Space(6);
 
@@ -37,7 +38,7 @@ namespace ToolsStudio.ShaderOS.Editor.Windows.Panels
 
             DrawKPICards(report, brokenCount, srpIssues);
             EditorGUILayout.Space(6);
-            DrawCriticalIssues(report, warnCount);
+            DrawCriticalIssues(report, warnCount, window);
             EditorGUILayout.Space(8);
             DrawPipelineDistribution(report);
             EditorGUILayout.Space(8);
@@ -118,7 +119,7 @@ namespace ToolsStudio.ShaderOS.Editor.Windows.Panels
             EditorGUILayout.EndHorizontal();
         }
 
-        private void DrawCriticalIssues(AuditReport report, int warnCount)
+        private void DrawCriticalIssues(AuditReport report, int warnCount, EditorWindow window)
         {
             // Count first — collapse section entirely when clean.
             int errorCount = report.CriticalIssueCount;
@@ -156,11 +157,10 @@ namespace ToolsStudio.ShaderOS.Editor.Windows.Panels
                     EditorGUILayout.LabelField($"{material.Name}  —  {issue.Description}", EditorStyles.wordWrappedMiniLabel);
                     EditorGUILayout.LabelField($"→ {issue.Resolution}", ShaderOSEditorStyles.TinyLabel);
                     EditorGUILayout.EndVertical();
-                    if (GUILayout.Button("Ping", EditorStyles.miniButton, GUILayout.Width(36)))
-                    {
-                        var asset = AssetDatabase.LoadAssetAtPath<Object>(material.AssetPath);
-                        if (asset != null) EditorGUIUtility.PingObject(asset);
-                    }
+                    EditorGUI.BeginDisabledGroup(!PingUtility.IsPingable);
+                    if (GUILayout.Button(PingUtility.ButtonContent("Ping"), EditorStyles.miniButton, GUILayout.Width(36)))
+                        PingUtility.PingMaterial(material, window);
+                    EditorGUI.EndDisabledGroup();
                     EditorGUILayout.EndHorizontal();
                     shown++;
                 }
@@ -210,11 +210,8 @@ namespace ToolsStudio.ShaderOS.Editor.Windows.Panels
 
             EditorGUILayout.LabelField("Dependency Graph", ShaderOSEditorStyles.SectionHeader);
 
-            // Single explicit-height rect for the whole row, then every element is positioned
-            // against that same rect's y/height — guarantees a shared vertical baseline instead
-            // of relying on IMGUI's default top-alignment of mismatched-height controls (a mini
-            // label and a mini button render at different natural heights, so laying them out
-            // via plain GUILayout.BeginHorizontal left the button visibly off-center).
+            // A shared rect keeps this row's baseline aligned — IMGUI's default top-alignment
+            // otherwise misaligns controls with different natural heights (label vs. button).
             const float rowHeight = 22f;
             var full = EditorGUILayout.GetControlRect(GUILayout.Height(rowHeight));
             GUI.Box(full, GUIContent.none, ShaderOSEditorStyles.IssueRow);

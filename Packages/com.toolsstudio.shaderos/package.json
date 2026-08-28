@@ -1,0 +1,24 @@
+{
+  "name": "com.toolsstudio.shaderos",
+  "displayName": "ShaderOS",
+  "version": "1.0.0",
+  "description": "Shader diagnostics and health monitoring for Unity. Analyze shaders, materials, keywords, variants, and dependencies to identify rendering risks before production.",
+  "unity": "2021.3",
+  "unityRelease": "0f1",
+  "documentationUrl": "https://github.com/tools-studio/shaderos-docs",
+  "changelogUrl": "https://github.com/tools-studio/shaderos-docs/blob/main/CHANGELOG.md",
+  "licensesUrl": "https://github.com/afterix-hub/shaderos/blob/main/LICENSE.md",
+  "dependencies": {},
+  "keywords": [
+    "shader",
+    "material",
+    "diagnostics",
+    "urp",
+    "keywords",
+    "variants"
+  ],
+  "author": {
+    "name": "Tools Studio",
+    "email": "support.toolsstudio@gmail.com"
+  }
+}

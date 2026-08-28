@@ -26,9 +26,8 @@ namespace ToolsStudio.ShaderOS.Editor.Windows.Panels
             _cellRight         = new GUIStyle(EditorStyles.miniLabel) { alignment = TextAnchor.MiddleRight };
             _cellRightBold     = new GUIStyle(EditorStyles.boldLabel) { alignment = TextAnchor.MiddleRight };
 
-            // Explicit padding, matching IssueRow's own explicit override exactly (both start from
-            // 6,6 regardless of what either base style's own inherited padding happens to be) —
-            // this is what actually guarantees the header lines up with the row values beneath it.
+            // Padding must match IssueRow's own override exactly, or the header drifts out of
+            // alignment with the row values beneath it.
             _headerRow = new GUIStyle(EditorStyles.toolbar) { padding = new RectOffset(6, 6, 3, 3) };
         }
 
@@ -51,12 +50,6 @@ namespace ToolsStudio.ShaderOS.Editor.Windows.Panels
             DrawPerShaderBreakdown(budget);
         }
 
-        // ------------------------------------------------------------------
-        // Global budget — the one project-wide indicator against Unity's
-        // hard 256-keyword limit. Kept as a bar: it's the single glanceable
-        // "how close to the edge am I" signal and nothing else on this tab
-        // duplicates it.
-        // ------------------------------------------------------------------
         private static void DrawGlobalBudgetBar(KeywordBudgetReport budget)
         {
             EditorGUILayout.LabelField("Global Keyword Budget", ShaderOSEditorStyles.SectionHeader);
@@ -90,14 +83,8 @@ namespace ToolsStudio.ShaderOS.Editor.Windows.Panels
                 new Color(1f, 1f, 1f, 0.35f));
         }
 
-        // ------------------------------------------------------------------
-        // Per-shader breakdown — the large-data region. Search filters the
-        // list without touching analysis data; the scroll view expands to
-        // fill whatever space the window actually has (see ShaderOSWindow,
-        // which does not wrap this tab in its own outer scroll view for
-        // exactly this reason — a scroll view with no height constraint
-        // nested inside another scroll view never actually engages).
-        // ------------------------------------------------------------------
+        // This scroll view has no height constraint by design — see ShaderOSWindow, which
+        // leaves this tab unwrapped so the constraint isn't doubled by an outer scroll view.
         private void DrawPerShaderBreakdown(KeywordBudgetReport budget)
         {
             EditorGUILayout.LabelField("Per-Shader Breakdown", ShaderOSEditorStyles.SectionHeader);
@@ -134,9 +121,6 @@ namespace ToolsStudio.ShaderOS.Editor.Windows.Panels
             GUILayout.Label(Truncate(contrib.ShaderName, 60), EditorStyles.miniLabel, GUILayout.ExpandWidth(true));
             GUILayout.Label(contrib.UniqueGlobalKeywords.Count.ToString(), _cellRight, GUILayout.Width(COL_GLOBAL));
 
-            // Local count — highlight red if over the per-shader budget. This color coding is the
-            // decision-relevant signal; a relative bar next to numbers that are already exact was
-            // redundant and cost an extra row of vertical space per shader for no added clarity.
             bool overBudget = contrib.LocalKeywordCount > KeywordBudgetReport.LOCAL_KEYWORD_PER_SHADER;
             if (overBudget)
             {

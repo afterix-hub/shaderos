@@ -1,45 +1,37 @@
 # ShaderOS
 
-Editor-only shader and material diagnostics for Unity. Scans a project's materials and shaders, surfaces broken references, missing textures, SRP Batcher incompatibilities, keyword budget pressure, and estimated shader variant counts — all read-only, nothing in this tool ever modifies a project asset.
+Shader diagnostics and health monitoring for Unity.
 
-This is the private source repository. It is not the package a customer receives — see [Repository Types](#repository-layout) below for how this relates to the Asset Store Package and the public Documentation Repository.
+This is ShaderOS's public source repository. ShaderOS gives you immediate visibility into the shader health of your Unity project. Scan every material in one click, find broken references instantly, track keyword budget consumption before it becomes a compile failure, and understand where variant counts are growing before they become a build problem — all read-only, nothing here ever modifies a project asset.
 
-## Requirements
+## What it does
 
-- Unity 2021.3 LTS or newer (developed and last verified against 6000.3.10f1)
-- No third-party package dependencies — both assemblies compile against Unity's own core modules only
+- **Material Health Scan** — broken shader reference detection, missing texture slot detection, a per-material health score, and SRP Batcher compatibility flags with specific incompatibility reasons
+- **Keyword Budget Tracker** — global keyword usage against Unity's 256-keyword hard limit, per-shader local keyword tracking against the 64-keyword limit, and duplicate keyword detection across shaders
+- **Variant Estimator** — theoretical variant counts per shader with risk classification, always labeled as pre-strip upper bounds
+- **Dependency Graph** — a Material → Shader → Texture relationship model built from Unity's own dependency data
+- **Build Tracker** — shader compile time recorded after every build, stored per machine for later comparison
+- **Load Demo Data** — a fully populated example report to explore before running your first scan
 
-## Opening the Project
-Open this folder directly in Unity via Unity Hub. No package installation step is required beyond what's already in `Packages/manifest.json`.
+## Source Included
 
-## Architecture
+ShaderOS's `.cs` source is included and editable, both here and in the Unity Asset Store package. Nothing ships as a compiled DLL. See [LICENSE.md](LICENSE.md) for exactly what the license grants and withholds, and [CONTRIBUTING.md](CONTRIBUTING.md) for how to open the project and submit a change.
 
-Two assemblies, Editor-only:
+## Documentation
 
-| Assembly | Path | Scope |
-|---|---|---|
-| `ToolsStudio.ShaderOS` | `Assets/ShaderOS/Runtime/` | Pure data models and analyzers — no `UnityEngine`/`UnityEditor` reference |
-| `ToolsStudio.ShaderOS.Editor` | `Assets/ShaderOS/Editor/` | Scan engine, Editor window, Project Settings page — references the Runtime assembly only |
+Full documentation — Getting Started, Features, Configuration, Troubleshooting, FAQ — lives in the [documentation repository](https://github.com/tools-studio/shaderos-docs).
 
-Entry point: `Tools -> ShaderOS`. Settings: `Edit -> Project Settings -> Tools Studio -> ShaderOS`.
+[Documentation](https://github.com/tools-studio/shaderos-docs) · [Support](SUPPORT.md) · [Contributing](CONTRIBUTING.md)
 
-## Development Workflow
+## Other Tools Studio Products
 
-Edit any `.cs` file under `Assets/ShaderOS/`; Unity recompiles both assemblies automatically. Open the ShaderOS window (`Tools -> ShaderOS`) to test changes directly — `Load Demo Data` gives you a populated report to work against without needing a real project's materials on hand. There is no separate build step during development; compiling for release only matters at export time, covered in `DLL-PUBLISHING-GUIDE.md`.
-
-## Development Notes
-
-- The `Editor` assembly is the only consumer of `UnityEditor`/`UnityEngine` APIs; the `Runtime` assembly stays engine-free by design so its analyzers are trivially unit-testable and so it can never end up referenced from anything player-facing.
-- `PreviewReportFactory` (`Editor/Analysis/`) builds the built-in demo report shown by the in-window Load Demo Data action. It reuses the same models and analyzers a real scan uses — there is no separate demo data path.
-- See `DLL-PUBLISHING-GUIDE.md` at this repository's root for the binary-only Asset Store export process.
-
-## Repository Layout
-
-This repository is one of two Tools Studio maintains for ShaderOS. The Asset Store Package customers actually install is a release artifact built from this repository — never a direct copy of it — and is never itself a repository. The public [Documentation Repository](https://github.com/tools-studio/shaderos-docs) is maintained independently of this one.
+- [Runtime Atlas](https://assetstore.unity.com/packages/tools/utilities/runtime-atlas-367424) — server-authoritative runtime economy
+- [Audio Atlas](https://assetstore.unity.com/packages/tools/utilities/audio-atlas-378112) — zero-GC audio architecture for Unity
+- [BuildLens](https://assetstore.unity.com/packages/tools/utilities/buildlens-378102) — build size and dependency analysis
 
 ## License
 
-Proprietary. This repository is private; ShaderOS is distributed to customers exclusively through the Unity Asset Store under Unity's Standard EULA.
+Source-Available under the [Tools Studio Source-Available License](LICENSE.md) — you can read, run, and modify this source for personal and commercial projects. Redistribution, resale, rebranding, and use of this source to build a competing product are not permitted. The compiled product is additionally distributed through the Unity Asset Store under Unity's Standard EULA.
 
 ---
 
